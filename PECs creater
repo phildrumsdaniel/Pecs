@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Grid with Textbox and Color Picker</title>
+  <style>
+    /* Container for the grid */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 40mm); /* 5 columns, each 40mm wide (4cm) */
+      grid-template-rows: repeat(7, 40mm);    /* 7 rows, each 40mm tall (4cm) */
+      gap: 2px;  /* Small gap between grid items */
+      width: fit-content;
+      margin: 20px auto; /* Center the grid */
+      position: relative; /* Ensure proper positioning of child elements */
+      border: 1px solid #000; /* Border around the entire grid */
+    }
+
+    /* Each grid item (square) */
+    .grid-item {
+      position: relative;
+      background-color: white;
+      border: 1px solid #ddd;
+      overflow: hidden;
+      width: 40mm; /* Ensure each square is 40mm (4cm) wide */
+      height: 40mm; /* Ensure each square is 40mm (4cm) tall */
+    }
+
+    /* Image styling */
+    .draggable {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1; /* Keep the image behind the text box */
+    }
+
+    /* Textbox within each grid item */
+    .text-box {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      border: 1px solid #ccc;
+      font-size: 14px; /* Slightly smaller text */
+      font-family: 'Comic Sans MS', cursive, sans-serif; /* Comic Sans font */
+      text-align: center; /* Horizontal centering */
+      line-height: 40mm; /* Vertical centering within the box */
+      resize: none;
+      overflow: hidden;
+      z-index: 2; /* Ensure the text box appears above the image */
+      top: 0;
+      left: 0;
+      color: black; /* Default color for text */
+    }
+
+    /* Style for the buttons */
+    .buttons-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+      border: 1px solid #ddd;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+
+    /* Style for the color picker */
+    .color-picker {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: 80%; /* Set the size of the color picker */
+    }
+
+    /* Custom right-click context menu */
+    .context-menu {
+      position: absolute;
+      display: none;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Drag and Drop an Image and Add Text</h2>
+  <p>Drag an image into the grid below and add text to each square. You can also change the text color!</p>
+
+  <div class="grid-container" id="grid-container">
+    <!-- 35 grid squares, 5 across, 7 down -->
+    <div class="grid-item" id="square-1">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 0)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-2">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 1)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-3">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 2)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-4">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 3)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-5">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 4)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-6">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 5)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-7">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 6)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-8">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 7)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-9">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 8)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-10">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 9)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-11">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 10)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-12">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 11)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-13">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 12)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-14">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 13)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-15">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 14)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-16">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 15)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-17">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 16)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-18">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 17)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-19">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 18)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-20">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 19)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-21">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 20)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-22">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 21)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-23">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 22)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-24">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 23)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-25">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 24)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-26">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 25)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-27">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 26)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-28">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 27)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-29">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 28)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-30">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 29)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-31">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 30)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-32">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 31)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-33">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 32)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-34">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 33)" value="#000000">
+    </div>
+    <div class="grid-item" id="square-35">
+      <textarea class="text-box" placeholder="Add text..."></textarea>
+      <input type="color" class="color-picker" onchange="changeTextColor(event, 34)" value="#000000">
+    </div>
+  </div>
+
+  <div class="buttons-container">
+    <!-- Clear, Print, and Export buttons -->
+    <button class="button" id="clearBtn">Clear All Images</button>
+    <button class="button" id="exportBtn">Export to PDF</button>
+  </div>
+
+  <!-- Include jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // Allow dragging of images onto the grid
+    document.querySelectorAll('.grid-item').forEach((item) => {
+      item.addEventListener('dragover', (event) => {
+        event.preventDefault(); // Allow drop
+      });
+
+      item.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+
+        if (file && file.type.startsWith('image')) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.classList.add('draggable');
+            img.onload = function() {
+              img.style.width = '100%';
+              img.style.height = '100%';
+            };
+
+            // Only remove the image if there's already one (prevent overwriting the text)
+            if (item.querySelector('img')) {
+              item.querySelector('img').remove();
+            }
+
+            item.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+
+    // Function to change the text color
+    function changeTextColor(event, index) {
+      const color = event.target.value;
+      const gridItem = document.querySelectorAll('.grid-item')[index];
+      const textBox = gridItem.querySelector('.text-box');
+      textBox.style.color = color;
+    }
+
+    // Clear button functionality
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.querySelectorAll('.grid-item').forEach((item) => {
+        item.innerHTML = ''; // Clear each square
+        item.appendChild(item.querySelector('.text-box'));  // Re-add the textbox
+      });
+    });
+
+    // Export to PDF button functionality
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const gridContainer = document.getElementById('grid-container');
+      const gridItems = gridContainer.querySelectorAll('.grid-item');
+
+      const margin = 5; // Minimal margin in mm
+      const xOffset = margin;
+      const yOffset = margin;
+
+      const cellWidth = 40; // 4cm = 40mm
+      const cellHeight = 40; // 4cm = 40mm
+
+      // Draw images and text boxes in PDF
+      gridItems.forEach((item, index) => {
+        const img = item.querySelector('img');
+        const textBox = item.querySelector('.text-box');
+        const text = textBox ? textBox.value : '';
+        const textColor = textBox ? textBox.style.color : 'black'; // Get the text color
+
+        const row = Math.floor(index / 5);
+        const col = index % 5;
+        const x = xOffset + col * cellWidth;
+        const y = yOffset + row * cellHeight;
+
+        // If image exists, add it to the PDF
+        if (img) {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+
+          const imgData = canvas.toDataURL('image/jpeg');
+
+          doc.addImage(imgData, 'JPEG', x, y, cellWidth, cellHeight);
+        }
+
+        // Add text to the PDF
+        if (text) {
+          doc.setFont('Comic Sans MS');
+          doc.setFontSize(10);
+          doc.setTextColor(textColor); // Set the text color
+          doc.text(text, x + 5, y + 20); // Add text within the grid square
+        }
+      });
+
+      doc.save('grid.pdf');
+    });
+
+    // Create context menu for right-click actions
+    const contextMenu = document.createElement('div');
+    contextMenu.classList.add('context-menu');
+    contextMenu.innerHTML = '<button id="maintainAspectRatio">Maintain Aspect Ratio</button><br/><button id="deleteImage">Delete Image</button>';
+    document.body.appendChild(contextMenu);
+
+    // Show context menu on right-click
+    document.querySelectorAll('.grid-item').forEach((item) => {
+      item.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        contextMenu.style.left = `${event.pageX}px`;
+        contextMenu.style.top = `${event.pageY}px`;
+        contextMenu.style.display = 'block';
+        contextMenu.dataset.gridItemId = item.id;
+      });
+    });
+
+    // Close context menu on left-click
+    document.addEventListener('click', () => {
+      contextMenu.style.display = 'none';
+    });
+
+    // Handle maintain aspect ratio option
+    document.getElementById('maintainAspectRatio').addEventListener('click', () => {
+      const gridItem = document.getElementById(contextMenu.dataset.gridItemId);
+      const img = gridItem.querySelector('img');
+      if (img) {
+        img.style.width = 'auto';
+        img.style.height = 'auto';
+      }
+      contextMenu.style.display = 'none';
+    });
+
+    // Handle delete image option
+    document.getElementById('deleteImage').addEventListener('click', () => {
+      const gridItem = document.getElementById(contextMenu.dataset.gridItemId);
+      const img = gridItem.querySelector('img');
+      if (img) {
+        img.remove();
+      }
+      contextMenu.style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
